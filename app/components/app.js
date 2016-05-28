@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import config from '../config';
 import axios from 'axios';
 import Profile from './github/profile';
 import Search from './github/search';
@@ -64,9 +65,9 @@ App.propTypes = {
     clientSecret: React.PropTypes.string
 };
 
-App.defaultProps = {
-    clientId: '412dde2a3b390bb5e96f',
-    appSecret: '813b21959ab0cde2a711d028fac18c75d07b6266'
+App.defaultProps =  {
+    clientId: config.__CLIENT_ID__,
+    appSecret: config.__APP_SECRET__
 };
 
 export default App;
