@@ -5,6 +5,7 @@ class RepoList extends Component {
     render() {
         return (
             <div>
+                <h3>User Repositories</h3>
                 <ul className="list-group">
                     {
                         this.props.userRepos.map(repo => {

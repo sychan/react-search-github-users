@@ -39,8 +39,7 @@ class Profile extends Component {
                             <a href={data.html_url} className="btn btn-primary" target="_blank">Visit Profile</a>
                         </div>
                     </div>
-                    <h3>User Repositories</h3>
-                    <RepoList userRepos={this.props.userRepos} />
+                    {this.props.userRepos.length ? <RepoList userRepos={this.props.userRepos} /> : 'This user has no repos'}
                 </div>
             </div>
         )

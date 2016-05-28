@@ -10,21 +10,22 @@ class App extends Component {
     constructor(props) {
         super(props);
         this.state = {
-            username: 'unleashit',
+            username: '',
+            userExist: false,
             userData: [],
             userRepos: [],
-            perPage: 10
+            perPage: 10,
         }
     }
     getUserData() {
         axios(`https://api.github.com/users/${this.state.username}?client_id=${this.props.clientId}&client_secret=${this.props.clientSecret}`)
         .then(resp => {
-            this.setState({userData: resp.data});
-            console.log(resp.data);
+            this.setState({userData: resp.data, userExist: true});
+            //console.log(resp.data);
         })
         .catch((err) => {
-            this.setState({username: null});
-            alert(err);
+            this.setState({username: null, userExist: false});
+            //alert(err);
             console.log(err);
         });
     }
@@ -32,11 +33,11 @@ class App extends Component {
         axios(`https://api.github.com/users/${this.state.username}/repos?per_page=${this.state.perPage}&client_id=${this.props.clientId}&client_secret=${this.props.clientSecret}&sort=created`)
             .then(resp => {
                 this.setState({userRepos: resp.data});
-                console.log(resp.data);
+                //console.log(resp.data);
             })
             .catch((err) => {
                 this.setState({username: null});
-                alert(err);
+                //alert(err);
                 console.log(err);
             });
     }
@@ -53,8 +54,8 @@ class App extends Component {
     render() {
         return(
             <div>
-                <Search onFormSubmit={this.handleFormSubmit.bind(this)} />
-                <Profile {...this.state} />
+                <Search onFormSubmit={this.handleFormSubmit.bind(this)} userExist={this.state.userExist} />
+                {(this.state.userExist) ? <Profile {...this.state} /> : ''}
             </div>
         )
     }
@@ -67,7 +68,7 @@ App.propTypes = {
 
 App.defaultProps =  {
     clientId: config.__CLIENT_ID__,
-    appSecret: config.__APP_SECRET__
+    clientSecret: config.__CLIENT_SECRET__
 };
 
 export default App;
