@@ -11,35 +11,37 @@ class App extends Component {
         super(props);
         this.state = {
             username: '',
-            userExist: false,
+            userFound: false,
             userData: [],
             userRepos: [],
-            perPage: 10,
+            perPage: 10
         }
     }
     getUserData() {
-        axios(`https://api.github.com/users/${this.state.username}?client_id=${this.props.clientId}&client_secret=${this.props.clientSecret}`)
+        axios(`https://api.github.com/users/${this.state.username}?client_id=${this.props.clientId}&client_secret=${this.props.clientSecret}`,
+            this.props.githubConfig)
         .then(resp => {
-            this.setState({userData: resp.data, userExist: true});
+            this.setState({userData: resp.data, userFound: true});
             //console.log(resp.data);
         })
         .catch((err) => {
-            this.setState({username: null, userExist: false});
+            this.setState({username: null, userFound: false});
             //alert(err);
             console.log(err);
         });
     }
     getUserRepos() {
-        axios(`https://api.github.com/users/${this.state.username}/repos?per_page=${this.state.perPage}&client_id=${this.props.clientId}&client_secret=${this.props.clientSecret}&sort=created`)
-            .then(resp => {
-                this.setState({userRepos: resp.data});
-                //console.log(resp.data);
-            })
-            .catch((err) => {
-                this.setState({username: null});
-                //alert(err);
-                console.log(err);
-            });
+        axios(`https://api.github.com/users/${this.state.username}/repos?per_page=${this.state.perPage}&client_id=${this.props.clientId}&client_secret=${this.props.clientSecret}&sort=created`,
+            this.props.githubConfig)
+        .then(resp => {
+            this.setState({userRepos: resp.data});
+            //console.log(resp.data);
+        })
+        .catch((err) => {
+            this.setState({username: null});
+            //alert(err);
+            console.log(err);
+        });
     }
     handleFormSubmit(username = null) {
         this.setState({username: username}, function () {
@@ -54,8 +56,8 @@ class App extends Component {
     render() {
         return(
             <div>
-                <Search onFormSubmit={this.handleFormSubmit.bind(this)} userExist={this.state.userExist} />
-                {(this.state.userExist) ? <Profile {...this.state} /> : ''}
+                <Search onFormSubmit={this.handleFormSubmit.bind(this)} userFound={this.state.userFound} />
+                {(this.state.userFound) ? <Profile {...this.state} /> : ''}
             </div>
         )
     }
@@ -68,7 +70,10 @@ App.propTypes = {
 
 App.defaultProps =  {
     clientId: config.__CLIENT_ID__,
-    clientSecret: config.__CLIENT_SECRET__
+    clientSecret: config.__CLIENT_SECRET__,
+    githubConfig: {
+        headers: {'Accept': 'application/vnd.github.v3+json'}
+    }
 };
 
 export default App;
